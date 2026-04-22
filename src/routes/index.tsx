@@ -6,23 +6,9 @@ import { AddressSearch } from "@/components/AddressSearch";
 import { MapViewClient as MapView, type MapSelection } from "@/components/MapViewClient";
 import { AnalysisPanel } from "@/components/AnalysisPanel";
 import { SpaceSidebar } from "@/components/SpaceSidebar";
+import type { MapType } from "@/components/MapView";
 
 export const Route = createFileRoute("/")({
-  head: () => ({
-    meta: [
-      { title: "ValidaVinho — Análise de viabilidade para adegas Vinho24h" },
-      {
-        name: "description",
-        content:
-          "Plataforma de análise geográfica para identificar regiões ideais para abertura de adegas Vinho24h: score de viabilidade, potencial de consumo e recomendações automáticas.",
-      },
-      { property: "og:title", content: "ValidaVinho — Vinho24h" },
-      {
-        property: "og:description",
-        content: "Análise de viabilidade geográfica para adegas e franquias Vinho24h.",
-      },
-    ],
-  }),
   component: Index,
 });
 
@@ -36,6 +22,8 @@ function Index() {
   const [towersHint, setTowersHint] = useState(1);
   const [historyKey, setHistoryKey] = useState(0);
   const [panelOpen, setPanelOpen] = useState(true);
+  const [mapType, setMapType] = useState<MapType>("osm");
+  const [googleApiKey, setGoogleApiKey] = useState<string>("");
 
   const handleSelectionChange = useCallback((s: MapSelection | null) => {
     setSelection(s);
@@ -76,6 +64,10 @@ function Index() {
             marker={marker}
             onSelectionChange={handleSelectionChange}
             numTowersHint={towersHint}
+            mapType={mapType}
+            onMapTypeChange={setMapType}
+            googleApiKey={googleApiKey}
+            onGoogleApiKeyChange={setGoogleApiKey}
           />
         </div>
 
