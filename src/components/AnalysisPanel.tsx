@@ -41,7 +41,7 @@ interface Props {
 
 const CLASSES = ["A1", "A2", "B1", "B2", "C1", "C2", "D", "E"];
 
-// Distribuição visual das classes (estilo Space Data) — proporção visual da barra
+// DistribuiÃƒÂ§ÃƒÂ£o visual das classes (estilo Space Data) Ã¢â‚¬â€ proporÃƒÂ§ÃƒÂ£o visual da barra
 const CLASS_DISTRIBUTION: Array<{ key: string; color: string; pct: number }> = [
   { key: "A1", color: "bg-fuchsia-500", pct: 22 },
   { key: "A2", color: "bg-purple-500", pct: 30 },
@@ -86,7 +86,7 @@ export function AnalysisPanel({
   const ready = input.inhabitants > 0 && input.incomePerCapita > 0;
   const result = ready ? computeAnalysis(input) : null;
 
-  // Área (hectares) — aproximação simples
+  // ÃƒÂrea (hectares) Ã¢â‚¬â€ aproximaÃƒÂ§ÃƒÂ£o simples
   const areaHa = selection?.radiusMeters
     ? +((Math.PI * selection.radiusMeters ** 2) / 10000).toFixed(2)
     : 0.53;
@@ -119,12 +119,12 @@ export function AnalysisPanel({
 
   async function save() {
     if (!selection || !result) {
-      toast.error("Selecione uma área no mapa");
+      toast.error("Selecione uma ÃƒÂ¡rea no mapa");
       return;
     }
     setSaving(true);
     const { error } = await supabase.from("analyses").insert({
-      name: name || `Área de ${areaHa} ha`,
+      name: name || `ÃƒÂrea de ${areaHa} ha`,
       address: address ?? null,
       center_lat: selection.center.lat,
       center_lng: selection.center.lng,
@@ -143,18 +143,18 @@ export function AnalysisPanel({
     setSaving(false);
     if (error) toast.error("Erro ao salvar");
     else {
-      toast.success("Análise salva");
+      toast.success("AnÃƒÂ¡lise salva");
       onSaved?.();
     }
   }
 
   const totalPotential = result?.potential ?? 3_600_000;
   const consumption = [
-    { icon: UtensilsCrossed, label: "Alimentação", value: totalPotential * 0.124, pct: "12.4%" },
+    { icon: UtensilsCrossed, label: "AlimentaÃƒÂ§ÃƒÂ£o", value: totalPotential * 0.124, pct: "12.4%" },
     { icon: UtensilsCrossed, label: "Lanches", value: totalPotential * 0.003, pct: "0.3%" },
     { icon: Home, label: "Outros (moradia)", value: totalPotential * 0.006, pct: "0.6%" },
     { icon: ShoppingBag, label: "Outros", value: totalPotential * 0.002, pct: "0.2%" },
-    { icon: Wine, label: "Bebidas alcoólicas", value: totalPotential * 0.001, pct: "0.1%", highlight: true },
+    { icon: Wine, label: "Bebidas alcoÃƒÂ³licas", value: totalPotential * 0.001, pct: "0.1%", highlight: true },
   ];
 
   return (
@@ -164,7 +164,7 @@ export function AnalysisPanel({
         <div className="flex items-center gap-2 text-sm">
           <span className="inline-block h-3 w-3 rounded-full border-2 border-[oklch(0.5_0.02_260)]" />
           <span className="font-medium">
-            Área de {areaHa} ha
+            ÃƒÂrea de {areaHa} ha
             <span className="ml-1 text-[oklch(0.5_0.02_260)]">- Analytics</span>
           </span>
         </div>
@@ -181,10 +181,10 @@ export function AnalysisPanel({
       <div className="flex items-center gap-1 border-b border-[oklch(0.92_0.01_260)] px-3 py-2 text-[13px]">
         <TabBtn active={tab === "salvar"} onClick={() => setTab("salvar")}>
           <Bookmark className="mr-1 h-3.5 w-3.5" />
-          Salvar área
+          Salvar ÃƒÂ¡rea
         </TabBtn>
         <TabBtn active={tab === "minhas"} onClick={() => setTab("minhas")}>
-          Minhas Áreas
+          Minhas ÃƒÂreas
         </TabBtn>
         <TabBtn active={tab === "mais"} onClick={() => setTab("mais")}>
           Mais
@@ -195,17 +195,17 @@ export function AnalysisPanel({
         {tab === "salvar" && (
           <div className="space-y-3 rounded-lg border border-[oklch(0.92_0.01_260)] bg-[oklch(0.98_0.005_260)] p-3">
             <div>
-              <Label className="text-xs">Nome da área</Label>
+              <Label className="text-xs">Nome da ÃƒÂ¡rea</Label>
               <Input
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="Ex.: Condomínio Itapuã"
+                placeholder="Ex.: CondomÃƒÂ­nio ItapuÃƒÂ£"
                 className="mt-1 h-8 text-sm"
               />
             </div>
             <CsvImport onImport={handleCsv} />
             <Button onClick={save} disabled={saving} className="w-full h-8 bg-[var(--primary-glow)] text-white hover:bg-[var(--primary-glow)]/90">
-              <Save className="mr-1.5 h-3.5 w-3.5" /> Salvar análise
+              <Save className="mr-1.5 h-3.5 w-3.5" /> Salvar anÃƒÂ¡lise
             </Button>
           </div>
         )}
@@ -223,7 +223,7 @@ export function AnalysisPanel({
             <>
               <Detail
                 icon={<TrendingDown className="h-3 w-3 text-rose-600" />}
-                text="Decréscimo de -21%"
+                text="DecrÃƒÂ©scimo de -21%"
               />
               <Detail
                 icon={<Users className="h-3 w-3" />}
@@ -239,7 +239,6 @@ export function AnalysisPanel({
           icon={<span className="font-bold">R$</span>}
           label="Renda"
           value={Number(income).toLocaleString("pt-BR")}
-          prefix="R$ "
           editing={editing}
           onChange={(v) => setIncome(Number(v) || 0)}
           rawValue={income}
@@ -251,7 +250,7 @@ export function AnalysisPanel({
           }
         />
 
-        {/* Domicílios + Classes */}
+        {/* DomicÃƒÂ­lios + Classes */}
         <div className="rounded-xl border border-[oklch(0.92_0.01_260)] bg-white p-3 shadow-[var(--shadow-soft)]">
           <div className="flex items-center justify-between text-sm">
             <div className="flex items-center gap-2 font-semibold">
@@ -266,7 +265,7 @@ export function AnalysisPanel({
               ) : (
                 <span>{Number(households).toLocaleString("pt-BR")}</span>
               )}
-              <span className="text-[oklch(0.5_0.02_260)] font-normal">domicílios</span>
+              <span className="text-[oklch(0.5_0.02_260)] font-normal">domicÃƒÂ­lios</span>
             </div>
             <span className="text-xs text-rose-600 inline-flex items-center gap-0.5">
               Queda -2.3% <TrendingDown className="h-3 w-3" />
@@ -283,7 +282,7 @@ export function AnalysisPanel({
                 title={`${c.key}: ${c.pct}%`}
               >
                 {c.pct >= 8 ? c.key : ""}
-                {c.key === "A2" && <span className="ml-0.5">★</span>}
+                {c.key === "A2" && <span className="ml-0.5">Ã¢Ëœâ€¦</span>}
               </div>
             ))}
           </div>
@@ -311,7 +310,7 @@ export function AnalysisPanel({
           </div>
 
           <div className="mt-3 rounded-md border border-emerald-300 bg-emerald-50 px-2.5 py-1.5 text-xs text-emerald-900">
-            <span className="font-semibold">Sozinhos</span> · Família Destaque
+            <span className="font-semibold">Sozinhos</span> Ã‚Â· FamÃƒÂ­lia Destaque
             <Info className="ml-1 inline h-3 w-3 text-emerald-700" />
           </div>
         </div>
@@ -319,7 +318,7 @@ export function AnalysisPanel({
         {/* Potencial */}
         <div className="rounded-xl border border-amber-200 bg-gradient-to-br from-amber-50 to-amber-100 p-3 shadow-[var(--shadow-soft)]">
           <div className="flex items-center justify-between">
-            <div className="font-display text-base font-bold text-amber-950">
+            <div className="font-numeric text-base font-bold text-amber-950 tabular-nums">
               {totalPotential >= 1_000_000
                 ? `R$${(totalPotential / 1_000_000).toFixed(1)} MI`
                 : formatBRL(totalPotential)}{" "}
@@ -352,7 +351,7 @@ export function AnalysisPanel({
           </ul>
         </div>
 
-        {/* Score / Recomendação */}
+        {/* Score / RecomendaÃƒÂ§ÃƒÂ£o */}
         {result && (
           <div className="rounded-xl border border-[oklch(0.92_0.01_260)] bg-gradient-to-br from-[oklch(0.32_0.12_18)] to-[oklch(0.22_0.08_16)] p-3 text-white shadow-[var(--shadow-elegant)]">
             <div className="flex items-baseline justify-between">
@@ -360,7 +359,7 @@ export function AnalysisPanel({
                 <div className="text-[10px] uppercase tracking-wider text-white/70">
                   Score de viabilidade
                 </div>
-                <div className="font-display text-3xl font-bold leading-none">
+                <div className="font-numeric text-3xl font-bold leading-none tabular-nums tracking-tight">
                   {result.score}
                   <span className="ml-1 text-xs font-normal text-white/70">/100</span>
                 </div>
@@ -376,7 +375,7 @@ export function AnalysisPanel({
                 {result.level === "alta"
                   ? "Alta"
                   : result.level === "media"
-                  ? "Média"
+                  ? "MÃƒÂ©dia"
                   : "Baixa"}
               </span>
             </div>
@@ -388,13 +387,13 @@ export function AnalysisPanel({
         {editing && (
           <div className="rounded-xl border border-dashed border-[oklch(0.85_0.02_260)] bg-[oklch(0.98_0.005_260)] p-3 space-y-2">
             <div className="text-[10px] font-bold uppercase tracking-wider text-[oklch(0.5_0.02_260)]">
-              Editar dados da área
+              Editar dados da ÃƒÂ¡rea
             </div>
             <div className="grid grid-cols-2 gap-2">
               <Field label="Habitantes" value={inhabitants} onChange={setInhabitants} />
               <Field label="Renda (R$)" value={income} onChange={setIncome} />
-              <Field label="Idade média" value={age} onChange={setAge} />
-              <Field label="Nº torres" value={towers} onChange={setTowers} />
+              <Field label="Idade mÃƒÂ©dia" value={age} onChange={setAge} />
+              <Field label="NÃ‚Âº torres" value={towers} onChange={setTowers} />
               <div className="col-span-2">
                 <Label className="text-[10px]">Classe social</Label>
                 <Select value={socialClass} onValueChange={setSocialClass}>
@@ -416,7 +415,7 @@ export function AnalysisPanel({
         )}
 
         <p className="rounded-md bg-[oklch(0.95_0.005_260)] px-3 py-2 text-[11px] text-[oklch(0.4_0.02_260)]">
-          Selecione uma área com atividades econômicas para conferir na análise.
+          Selecione uma ÃƒÂ¡rea com atividades econÃƒÂ´micas para conferir na anÃƒÂ¡lise.
         </p>
       </div>
 
@@ -428,7 +427,7 @@ export function AnalysisPanel({
           onClick={() => setEditing((e) => !e)}
           className="flex-1 h-8 text-xs"
         >
-          {editing ? "Concluir edição" : "Editar dados"}
+          {editing ? "Concluir ediÃƒÂ§ÃƒÂ£o" : "Editar dados"}
         </Button>
         <Button
           onClick={save}
@@ -514,12 +513,12 @@ function DataCard({
               className="h-7 w-28 px-1.5 py-0 text-lg font-bold bg-white/80 text-[oklch(0.2_0.02_260)]"
             />
           ) : (
-            <span className="font-display text-2xl font-bold leading-none">
+            <span className="font-numeric text-2xl font-bold leading-none tabular-nums tracking-tight">
               {prefix}
               {value}
             </span>
           )}
-          <span className="text-sm font-medium opacity-90">· {label}</span>
+          <span className="text-sm font-medium opacity-90">Ã‚Â· {label}</span>
           <Info className="ml-0.5 h-3 w-3 opacity-70" />
         </div>
       </div>
@@ -558,3 +557,5 @@ function Field({
     </div>
   );
 }
+
+

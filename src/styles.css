@@ -52,7 +52,9 @@
   --color-danger: var(--danger);
   --color-primary-glow: var(--primary-glow);
   --font-sans: "Inter", system-ui, sans-serif;
+  --font-numeric: "Space Grotesk", "Inter", system-ui, sans-serif;
   --font-display: "Playfair Display", Georgia, serif;
+  --font-numeric: var(--font-numeric);
 }
 
 :root {
@@ -64,7 +66,7 @@
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.15 0.04 350);
 
-  /* Cor primária: bordô Vinho24h — #8B1A4A ≈ oklch(0.38 0.19 350) */
+  /* Cor primÃ¡ria: bordÃ´ Vinho24h â€” #8B1A4A â‰ˆ oklch(0.38 0.19 350) */
   --primary: oklch(0.38 0.19 350);
   --primary-foreground: oklch(0.99 0 0);
   --primary-glow: oklch(0.45 0.20 350);
@@ -140,3 +142,4 @@
 .leaflet-draw-toolbar a {
   background-color: var(--card) !important;
 }
+

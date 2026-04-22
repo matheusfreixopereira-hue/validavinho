@@ -68,7 +68,7 @@ export function MapView({ center, marker, onSelectionChange, numTowersHint = 1, 
       position: "topright",
       edit: { featureGroup: drawn, remove: true },
       draw: {
-        polygon: { allowIntersection: false, showArea: true, shapeOptions: { color: "#8B1A4A", weight: 3, fillOpacity: 0.18 } },
+        polygon: { showArea: true, shapeOptions: { color: "#8B1A4A", weight: 3, fillOpacity: 0.18 } },
         circle: { shapeOptions: { color: "#6b1040", weight: 2, fillOpacity: 0.15 } },
         polyline: false, rectangle: false, marker: false, circlemarker: false,
       },
@@ -179,3 +179,4 @@ export function MapView({ center, marker, onSelectionChange, numTowersHint = 1, 
     </div>
   );
 }
+
