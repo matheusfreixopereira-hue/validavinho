@@ -73,10 +73,25 @@ export function AnalysisPanel({
   const [households, setHouseholds] = useState<number | "">(291);
   const [saving, setSaving] = useState(false);
   const [editing, setEditing] = useState(false);
+  const [ibge, setIbge] = useState(null);
+  const [ibgeLoading, setIbgeLoading] = useState(false);
 
   useEffect(() => {
     onTowersChange(typeof towers === "number" ? towers : 1);
   }, [towers, onTowersChange]);
+
+  useEffect(() => {
+    if (!selection) return;
+    setIbgeLoading(true);
+    fetchIbgeData(selection.center.lat, selection.center.lng)
+      .then((data) => {
+        setIbge(data);
+        if (data.populacao) setInhabitants(data.populacao);
+        if (data.rendaPerCapitaMensal) setIncome(data.rendaPerCapitaMensal);
+      })
+      .catch(() => setIbge(null))
+      .finally(() => setIbgeLoading(false));
+  }, [selection]);
 
   const input: AnalysisInput = {
     inhabitants: Number(inhabitants) || 0,
