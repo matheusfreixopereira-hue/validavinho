@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import {
   X,
   Bookmark,
@@ -13,6 +13,7 @@ import {
   ShoppingBag,
   Save,
   Upload,
+  Building2,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -25,6 +26,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { CsvImport, type CsvRowData } from "./CsvImport";
+import { BusinessPanel } from "./BusinessPanel";
 import { computeAnalysis, formatBRL, type AnalysisInput } from "@/lib/viability";
 import type { MapSelection } from "./MapView";
 import { supabase } from "@/integrations/supabase/client";
@@ -60,7 +62,7 @@ export function AnalysisPanel({
   onSaved,
   onClose,
 }: Props) {
-  const [tab, setTab] = useState<"salvar" | "minhas" | "mais">("minhas");
+  const [tab, setTab] = useState<"salvar" | "minhas" | "mais" | "atividades">("minhas");
   const [name, setName] = useState("");
   const [inhabitants, setInhabitants] = useState<number | "">(920);
   const [income, setIncome] = useState<number | "">(26480);
@@ -188,6 +190,10 @@ export function AnalysisPanel({
         </TabBtn>
         <TabBtn active={tab === "mais"} onClick={() => setTab("mais")}>
           Mais
+        </TabBtn>
+        <TabBtn active={tab === "atividades"} onClick={() => setTab("atividades")}>
+          <Building2 className="mr-1 h-3.5 w-3.5" />
+          Atividades
         </TabBtn>
       </div>
 
@@ -413,6 +419,8 @@ export function AnalysisPanel({
             <CsvImport onImport={handleCsv} />
           </div>
         )}
+
+        {tab === "atividades" && <BusinessPanel selection={selection} />}
 
         <p className="rounded-md bg-[oklch(0.95_0.005_260)] px-3 py-2 text-[11px] text-[oklch(0.4_0.02_260)]">
           Selecione uma área com atividades econômicas para conferir na análise.
