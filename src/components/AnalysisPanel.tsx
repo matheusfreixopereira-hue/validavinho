@@ -28,7 +28,7 @@ interface Props {
 
 const CLASSES = ["A1", "A2", "B1", "B2", "C1", "C2", "D", "E"];
 
-export function AnalysisPanel({ selection, address, onTowersChange }: Props) {
+export function AnalysisPanel({ selection, address, onTowersChange, onSaved }: Props) {
   const [name, setName] = useState("");
   const [inhabitants, setInhabitants] = useState<number | "">(0);
   const [income, setIncome] = useState<number | "">(0);
