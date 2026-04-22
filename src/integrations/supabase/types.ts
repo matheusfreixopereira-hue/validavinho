@@ -14,6 +14,33 @@ export type Database = {
   }
   public: {
     Tables: {
+      profiles: {
+        Row: {
+          id: string
+          username: string
+          display_name: string | null
+          first_name: string | null
+          role: string
+          franchise_number: number | null
+        }
+        Insert: {
+          id: string
+          username: string
+          display_name?: string | null
+          first_name?: string | null
+          role?: string
+          franchise_number?: number | null
+        }
+        Update: {
+          id?: string
+          username?: string
+          display_name?: string | null
+          first_name?: string | null
+          role?: string
+          franchise_number?: number | null
+        }
+        Relationships: []
+      }
       analyses: {
         Row: {
           address: string | null
