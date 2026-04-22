@@ -38,6 +38,13 @@ export const Route = createRootRoute({
       { name: "author", content: "validavinho" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
+      { property: "og:title", content: "validavinho — Análise de viabilidade" },
+      { name: "twitter:title", content: "validavinho — Análise de viabilidade" },
+      { name: "description", content: "Viability Compass analyzes location data to calculate business viability scores and consumption potential." },
+      { property: "og:description", content: "Viability Compass analyzes location data to calculate business viability scores and consumption potential." },
+      { name: "twitter:description", content: "Viability Compass analyzes location data to calculate business viability scores and consumption potential." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/2f9782c7-ebe1-4122-b74a-c51614f93d06/id-preview-b850b3f9--c77eaf9a-0724-4963-babc-4c33b39feb56.lovable.app-1776861921570.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/2f9782c7-ebe1-4122-b74a-c51614f93d06/id-preview-b850b3f9--c77eaf9a-0724-4963-babc-4c33b39feb56.lovable.app-1776861921570.png" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
