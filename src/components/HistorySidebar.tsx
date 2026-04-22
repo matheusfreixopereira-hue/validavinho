@@ -53,12 +53,14 @@ export function HistorySidebar({ onSelect, refreshKey }: Props) {
 
   return (
     <aside className="flex h-full w-[280px] flex-col border-r border-border bg-card">
-      <header className="border-b border-border bg-[var(--gradient-wine)] px-5 py-4 text-white">
+      <header className="border-b border-border bg-[var(--gradient-wine)] px-5 py-4 text-white"
+        style={{ background: "var(--gradient-wine)" }}>
         <div className="flex items-center gap-2">
-          <Wine className="h-5 w-5 text-[var(--primary-glow)]" />
-          <h1 className="font-display text-xl font-semibold tracking-tight">
-            validavinho
-          </h1>
+          <img
+            src="https://iili.io/BSf2Wmv.webp"
+            alt="Vinho24h"
+            className="h-5 w-auto object-contain brightness-0 invert"
+          />
         </div>
         <p className="mt-1 text-[11px] text-white/70">
           Análise de viabilidade para adegas
@@ -131,7 +133,7 @@ export function HistorySidebar({ onSelect, refreshKey }: Props) {
       </ScrollArea>
 
       <footer className="border-t border-border px-4 py-3 text-[10px] text-muted-foreground">
-        Mapa: OpenStreetMap • Dados protegidos
+        Mapa: OpenStreetMap · Dados protegidos · Vinho24h
       </footer>
     </aside>
   );

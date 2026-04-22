@@ -6,20 +6,6 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/*
- * Design system definition.
- *
- * The @theme inline block maps CSS custom properties to Tailwind utility
- * classes (e.g. --color-primary -> bg-primary, text-primary).
- *
- * The :root and .dark blocks define the actual color values using oklch.
- * All colors MUST use oklch format.
- *
- * To add a new semantic color:
- * 1. Add the variable to :root (light value) and .dark (dark value)
- * 2. Register it in @theme inline as --color-<name>: var(--<name>)
- */
-
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -72,45 +58,52 @@
 :root {
   --radius: 0.625rem;
   --background: oklch(0.99 0 0);
-  --foreground: oklch(0.18 0.04 15);
+  --foreground: oklch(0.15 0.04 350);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.18 0.04 15);
+  --card-foreground: oklch(0.15 0.04 350);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.18 0.04 15);
-  --primary: oklch(0.32 0.12 18);
+  --popover-foreground: oklch(0.15 0.04 350);
+
+  /* Cor primária: bordô Vinho24h — #8B1A4A ≈ oklch(0.38 0.19 350) */
+  --primary: oklch(0.38 0.19 350);
   --primary-foreground: oklch(0.99 0 0);
-  --primary-glow: oklch(0.45 0.16 20);
-  --secondary: oklch(0.96 0.01 15);
-  --secondary-foreground: oklch(0.25 0.08 18);
-  --muted: oklch(0.96 0.005 15);
-  --muted-foreground: oklch(0.5 0.02 15);
-  --accent: oklch(0.94 0.03 18);
-  --accent-foreground: oklch(0.25 0.08 18);
+  --primary-glow: oklch(0.45 0.20 350);
+
+  --secondary: oklch(0.96 0.01 350);
+  --secondary-foreground: oklch(0.25 0.08 350);
+  --muted: oklch(0.96 0.005 350);
+  --muted-foreground: oklch(0.5 0.02 350);
+  --accent: oklch(0.94 0.03 350);
+  --accent-foreground: oklch(0.25 0.08 350);
   --destructive: oklch(0.55 0.22 27);
   --destructive-foreground: oklch(0.99 0 0);
-  --border: oklch(0.92 0.01 15);
-  --input: oklch(0.94 0.01 15);
-  --ring: oklch(0.32 0.12 18);
+  --border: oklch(0.92 0.01 350);
+  --input: oklch(0.94 0.01 350);
+  --ring: oklch(0.38 0.19 350);
   --success: oklch(0.55 0.15 145);
   --warning: oklch(0.72 0.16 75);
   --danger: oklch(0.55 0.22 27);
-  --gradient-primary: linear-gradient(135deg, oklch(0.32 0.12 18), oklch(0.22 0.08 16));
-  --gradient-wine: linear-gradient(135deg, oklch(0.28 0.11 18) 0%, oklch(0.18 0.06 16) 100%);
-  --shadow-elegant: 0 10px 30px -10px color-mix(in oklab, oklch(0.32 0.12 18) 35%, transparent);
-  --shadow-soft: 0 2px 8px -2px color-mix(in oklab, oklch(0.18 0.04 15) 12%, transparent);
-  --chart-1: oklch(0.32 0.12 18);
+
+  /* Gradientes vinho */
+  --gradient-primary: linear-gradient(135deg, oklch(0.38 0.19 350), oklch(0.25 0.14 350));
+  --gradient-wine: linear-gradient(135deg, oklch(0.22 0.12 350) 0%, oklch(0.15 0.08 350) 100%);
+  --shadow-elegant: 0 10px 30px -10px color-mix(in oklab, oklch(0.38 0.19 350) 35%, transparent);
+  --shadow-soft: 0 2px 8px -2px color-mix(in oklab, oklch(0.15 0.04 350) 12%, transparent);
+
+  --chart-1: oklch(0.38 0.19 350);
   --chart-2: oklch(0.55 0.15 145);
   --chart-3: oklch(0.72 0.16 75);
   --chart-4: oklch(0.55 0.22 27);
-  --chart-5: oklch(0.45 0.16 20);
-  --sidebar: oklch(0.18 0.04 15);
-  --sidebar-foreground: oklch(0.96 0.01 15);
-  --sidebar-primary: oklch(0.45 0.16 20);
+  --chart-5: oklch(0.45 0.20 350);
+
+  --sidebar: oklch(0.15 0.04 350);
+  --sidebar-foreground: oklch(0.96 0.01 350);
+  --sidebar-primary: oklch(0.45 0.20 350);
   --sidebar-primary-foreground: oklch(0.99 0 0);
-  --sidebar-accent: oklch(0.25 0.06 16);
-  --sidebar-accent-foreground: oklch(0.96 0.01 15);
-  --sidebar-border: oklch(0.28 0.06 16);
-  --sidebar-ring: oklch(0.45 0.16 20);
+  --sidebar-accent: oklch(0.22 0.08 350);
+  --sidebar-accent-foreground: oklch(0.96 0.01 350);
+  --sidebar-border: oklch(0.25 0.08 350);
+  --sidebar-ring: oklch(0.45 0.20 350);
 }
 
 @layer base {
@@ -138,7 +131,7 @@
 /* Leaflet overrides */
 .leaflet-container {
   font-family: var(--font-sans);
-  background: oklch(0.96 0.005 15);
+  background: oklch(0.96 0.005 350);
 }
 .leaflet-control-attribution {
   background: rgba(255,255,255,0.85) !important;
