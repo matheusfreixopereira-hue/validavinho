@@ -30,6 +30,7 @@ import { BusinessPanel } from "./BusinessPanel";
 import { computeAnalysis, formatBRL, type AnalysisInput } from "@/lib/viability";
 import type { MapSelection } from "./MapView";
 import { supabase } from "@/integrations/supabase/client";
+import { fetchIbgeData, type IbgeData } from "@/lib/ibge";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
@@ -213,6 +214,26 @@ export function AnalysisPanel({
             <Button onClick={save} disabled={saving} className="w-full h-8 bg-[var(--primary-glow)] text-white hover:bg-[var(--primary-glow)]/90">
               <Save className="mr-1.5 h-3.5 w-3.5" /> Salvar análise
             </Button>
+          </div>
+        )}
+
+        {/* IBGE source badge */}
+        {(ibge || ibgeLoading) && (
+          <div className="flex items-center gap-1.5 rounded-md bg-[oklch(0.97_0.01_260)] border border-[oklch(0.92_0.01_260)] px-2.5 py-1.5 text-[11px] text-[oklch(0.4_0.02_260)]">
+            {ibgeLoading ? (
+              <>
+                <span className="h-3 w-3 animate-spin rounded-full border border-gray-300 border-t-[oklch(0.38_0.19_350)]" />
+                Buscando dados do IBGE...
+              </>
+            ) : (
+              <>
+                <span className="font-semibold text-[oklch(0.38_0.19_350)]">IBGE</span>
+                {ibge?.municipio}/{ibge?.uf}
+                {ibge?.pibPerCapitaAnual && (
+                  <span className="ml-auto text-gray-400">PIB/cap R${Math.round((ibge.pibPerCapitaAnual ?? 0) * 1000).toLocaleString("pt-BR")}/ano</span>
+                )}
+              </>
+            )}
           </div>
         )}
 
