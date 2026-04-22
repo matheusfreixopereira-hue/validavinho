@@ -144,7 +144,7 @@
   --sidebar-accent: oklch(0.279 0.041 260.031);
   --sidebar-accent-foreground: oklch(0.984 0.003 247.858);
   --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.551 0.027 264.364);
+  --sidebar-ring: oklch(0.45 0.16 20);
 }
 
 @layer base {
@@ -152,8 +152,32 @@
     border-color: var(--color-border);
   }
 
+  html, body, #root {
+    height: 100%;
+  }
+
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
   }
+
+  h1, h2, h3, .font-display {
+    font-family: var(--font-display);
+    letter-spacing: -0.01em;
+  }
+}
+
+/* Leaflet overrides */
+.leaflet-container {
+  font-family: var(--font-sans);
+  background: oklch(0.96 0.005 15);
+}
+.leaflet-control-attribution {
+  background: rgba(255,255,255,0.85) !important;
+  font-size: 10px !important;
+}
+.leaflet-draw-toolbar a {
+  background-color: var(--card) !important;
 }
