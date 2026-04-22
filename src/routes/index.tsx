@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState, useCallback } from "react";
 import { Toaster } from "@/components/ui/sonner";
 import { AddressSearch } from "@/components/AddressSearch";
-import { MapView, type MapSelection } from "@/components/MapView";
+import { MapViewClient as MapView, type MapSelection } from "@/components/MapViewClient";
 import { AnalysisPanel } from "@/components/AnalysisPanel";
 import { HistorySidebar, type SavedAnalysis } from "@/components/HistorySidebar";
 
