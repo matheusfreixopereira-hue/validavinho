@@ -24,8 +24,53 @@ function formatShortName(data: {
   return [name, city, state].filter(Boolean).join(", ");
 }
 
+// Detect "-22.9720, -43.3862" or "-22.9720 -43.3862"
+function parseCoords(q: string): GeocodeResult | null {
+  const m = q.trim().match(/^(-?\d{1,3}(?:[.,]\d+)?)\s*[,;\s]\s*(-?\d{1,3}(?:[.,]\d+)?)$/);
+  if (!m) return null;
+  const lat = parseFloat(m[1].replace(",", "."));
+  const lng = parseFloat(m[2].replace(",", "."));
+  if (lat < -90 || lat > 90 || lng < -180 || lng > 180) return null;
+  return {
+    lat,
+    lng,
+    displayName: `${lat}, ${lng}`,
+    shortName: `Coordenadas ${lat.toFixed(5)}, ${lng.toFixed(5)}`,
+  };
+}
+
+// Detect CEP "22775-040" or "22775040"
+function isCep(q: string): string | null {
+  const digits = q.replace(/\D/g, "");
+  return digits.length === 8 ? digits : null;
+}
+
+async function geocodeCep(cep: string): Promise<GeocodeResult[]> {
+  const res = await fetch(`https://brasilapi.com.br/api/cep/v2/${cep}`);
+  if (!res.ok) return [];
+  const d = await res.json();
+  if (!d.latitude || !d.longitude) return [];
+  const parts = [d.street, d.neighborhood, d.city, d.state].filter(Boolean);
+  return [{
+    lat: parseFloat(d.latitude),
+    lng: parseFloat(d.longitude),
+    displayName: parts.join(", "),
+    shortName: [d.street || d.neighborhood || `CEP ${cep}`, d.city, d.state].filter(Boolean).join(", "),
+  }];
+}
+
 export async function geocode(query: string): Promise<GeocodeResult[]> {
   if (!query.trim()) return [];
+
+  // Coordinates
+  const coords = parseCoords(query);
+  if (coords) return [coords];
+
+  // CEP
+  const cep = isCep(query);
+  if (cep) return geocodeCep(cep);
+
+  // Address via Nominatim
   const url = new URL("https://nominatim.openstreetmap.org/search");
   url.searchParams.set("q", query);
   url.searchParams.set("format", "json");

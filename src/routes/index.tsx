@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+﻿import { createFileRoute } from "@tanstack/react-router";
 import { useState, useCallback } from "react";
 import { Search } from "lucide-react";
 import { Toaster } from "@/components/ui/sonner";
@@ -51,6 +51,8 @@ function Index() {
                     setCenter(c);
                     setMarker({ ...c, label: r.displayName });
                     setAddress(r.displayName);
+                    setSelection({ type: "radius", center: c, radiusMeters: 500 });
+                    setPanelOpen(true);
                   }}
                 />
               </div>
