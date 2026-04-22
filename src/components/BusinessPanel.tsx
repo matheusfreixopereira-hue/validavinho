@@ -33,7 +33,7 @@ export function BusinessPanel({ selection }: Props) {
     setFilter(ALL);
     const q = selection.type === "radius" ? { type: "radius" as const, lat: selection.center.lat, lng: selection.center.lng, radiusMeters: selection.radiusMeters ?? 500 } : { type: "polygon" as const, coords: ((selection.geojson?.geometry as GeoJSON.Polygon | undefined)?.coordinates[0] ?? []).map(([lng, lat]) => [lat, lng]) }; fetchBusinesses(q)
       .then(setBusinesses)
-      .catch((e) => setError(e.message ?? "Erro ao buscar atividades"))
+      .catch((e) => { const msg = e?.message ?? ""; setError(msg.includes("fetch") || msg === "" ? "Não foi possível conectar ao OpenStreetMap. Verifique sua conexão e tente novamente." : msg); })
       .finally(() => setLoading(false));
   }, [selKey]);
 

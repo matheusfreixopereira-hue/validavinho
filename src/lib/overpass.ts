@@ -82,14 +82,21 @@ function buildQuery(q: OverpassQuery): string {
   return `${timeout};(node[amenity](poly:"${poly}");node[shop](poly:"${poly}");way[amenity](poly:"${poly}");way[shop](poly:"${poly}"););out center 500;`;
 }
 
+const OVERPASS_ENDPOINTS = [
+  "https://overpass-api.de/api/interpreter",
+  "https://overpass.kumi.systems/api/interpreter",
+  "https://maps.mail.ru/osm/tools/overpass/api/interpreter",
+];
+
 export async function fetchBusinesses(q: OverpassQuery): Promise<Business[]> {
   const query = buildQuery(q);
-  const res = await fetch("https://overpass-api.de/api/interpreter", {
-    method: "POST",
-    body: "data=" + encodeURIComponent(query),
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-  });
-  if (!res.ok) throw new Error(`Overpass error: ${res.status}`);
+  let lastError: Error = new Error("Nenhum servidor Overpass disponível");
+  for (const endpoint of OVERPASS_ENDPOINTS) {
+    try {
+      const res = await fetch(`${endpoint}?data=${encodeURIComponent(query)}`, {
+        signal: AbortSignal.timeout(20000),
+      });
+      if (!res.ok) throw new Error(`Overpass error: ${res.status}`);
   const json = await res.json();
   const seen = new Set<number>();
   const businesses: Business[] = [];
@@ -114,7 +121,12 @@ export async function fetchBusinesses(q: OverpassQuery): Promise<Business[]> {
       openingHours: tags.opening_hours,
     });
   }
-  return businesses;
+      return businesses;
+    } catch (e) {
+      lastError = e instanceof Error ? e : new Error(String(e));
+    }
+  }
+  throw lastError;
 }
 
 export function exportToCsv(businesses: Business[], filename = "atividades.csv") {
