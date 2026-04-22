@@ -92,6 +92,7 @@ function Index() {
         selection={selection}
         address={address}
         onTowersChange={handleTowersChange}
+        onSaved={() => setHistoryKey((k) => k + 1)}
       />
 
       <Toaster position="top-right" richColors />

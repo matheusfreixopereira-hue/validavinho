@@ -106,6 +106,7 @@ export function AnalysisPanel({ selection, address, onTowersChange, onSaved }: P
       toast.error("Erro ao salvar análise");
     } else {
       toast.success("Análise salva");
+      onSaved?.();
     }
   }
 
