@@ -30,7 +30,7 @@ import { BusinessPanel } from "./BusinessPanel";
 import { computeAnalysis, formatBRL, type AnalysisInput } from "@/lib/viability";
 import type { MapSelection } from "./MapView";
 import { supabase } from "@/integrations/supabase/client";
-import { fetchIbgeData, type IbgeData } from "@/lib/ibge";
+import { fetchIbgeData, getSelectedAreaHa, type IbgeData } from "@/lib/ibge";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
@@ -83,7 +83,8 @@ export function AnalysisPanel({
   useEffect(() => {
     if (!selection) return;
     setIbgeLoading(true);
-    fetchIbgeData(selection.center.lat, selection.center.lng)
+    const areaHa = getSelectedAreaHa(selection as Parameters<typeof getSelectedAreaHa>[0]);
+    fetchIbgeData(selection.center.lat, selection.center.lng, areaHa)
       .then((data) => {
         setIbge(data);
         if (data.populacao) setInhabitants(data.populacao);
@@ -244,8 +245,8 @@ export function AnalysisPanel({
               <>
                 <span className="font-semibold text-[oklch(0.38_0.19_350)]">IBGE</span>
                 {ibge?.municipio}/{ibge?.uf}
-                {ibge?.pibPerCapitaAnual && (
-                  <span className="ml-auto text-gray-400">PIB/cap R${Math.round((ibge.pibPerCapitaAnual ?? 0) * 1000).toLocaleString("pt-BR")}/ano</span>
+                {ibge?.populacaoTotal && (
+                  <span className="ml-auto text-gray-400">{ibge.populacaoTotal.toLocaleString("pt-BR")} hab total</span>
                 )}
               </>
             )}
