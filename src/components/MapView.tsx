@@ -1,4 +1,4 @@
-﻿import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import L from "leaflet";
 import "leaflet-draw";
 import { Map as MapIcon, Satellite, Globe } from "lucide-react";

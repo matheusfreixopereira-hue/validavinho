@@ -1,4 +1,4 @@
-﻿import { useEffect, useState, type ComponentType } from "react";
+import { useEffect, useState, type ComponentType } from "react";
 import type { MapSelection, MapType } from "./MapView";
 
 interface Props {
