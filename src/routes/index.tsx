@@ -1,6 +1,7 @@
-﻿import { createFileRoute } from "@tanstack/react-router";
-import { useState, useCallback } from "react";
-import { Search } from "lucide-react";
+﻿import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useState, useCallback, useEffect } from "react";
+import { Search, LogOut } from "lucide-react";
+import { getProfile, logout, type UserProfile } from "@/lib/auth";
 import { Toaster } from "@/components/ui/sonner";
 import { AddressSearch } from "@/components/AddressSearch";
 import { MapViewClient as MapView, type MapSelection } from "@/components/MapViewClient";
@@ -15,6 +16,8 @@ export const Route = createFileRoute("/")({
 const DEFAULT_CENTER = { lat: -22.999, lng: -43.36 }; // Barra da Tijuca
 
 function Index() {
+  const navigate = useNavigate();
+  const [profile, setProfile] = useState<UserProfile | null>(null);
   const [center, setCenter] = useState(DEFAULT_CENTER);
   const [marker, setMarker] = useState<{ lat: number; lng: number; label?: string } | undefined>();
   const [selection, setSelection] = useState<MapSelection | null>(null);
@@ -24,6 +27,13 @@ function Index() {
   const [panelOpen, setPanelOpen] = useState(true);
   const [mapType, setMapType] = useState<MapType>("osm");
   const [googleApiKey, setGoogleApiKey] = useState<string>("");
+
+  useEffect(() => { getProfile().then(setProfile); }, []);
+
+  async function handleLogout() {
+    await logout();
+    navigate({ to: "/login" });
+  }
 
   const handleSelectionChange = useCallback((s: MapSelection | null) => {
     setSelection(s);
@@ -39,6 +49,18 @@ function Index() {
       <SpaceSidebar />
 
       <main className="relative flex flex-1 flex-col">
+        {/* User badge — top right */}
+        {profile && (
+          <div className="absolute right-4 top-3 z-[1000] flex items-center gap-2 rounded-full bg-white/95 shadow px-3 py-1.5 text-sm backdrop-blur-sm">
+            <span className="text-gray-700">
+              Bem-vindo, <span className="font-semibold text-[oklch(0.38_0.19_350)]">{profile.firstName}</span>
+            </span>
+            <button onClick={handleLogout} title="Sair" className="rounded-full p-1 hover:bg-gray-100 transition-colors">
+              <LogOut className="h-3.5 w-3.5 text-gray-500" />
+            </button>
+          </div>
+        )}
+
         {/* Search bar — top */}
         <div className="absolute left-1/2 top-3 z-[1000] w-full max-w-2xl -translate-x-1/2 px-4">
           <div className="rounded-full bg-white/95 shadow-[var(--shadow-elegant)] backdrop-blur">
