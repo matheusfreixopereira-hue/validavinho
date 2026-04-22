@@ -18,6 +18,7 @@ export function BusinessPanel({ selection }: Props) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState(ALL);
+  const [retryCount, setRetryCount] = useState(0);
 
   const selKey = useMemo(() => {
     if (!selection) return null;
@@ -35,7 +36,7 @@ export function BusinessPanel({ selection }: Props) {
       .then(setBusinesses)
       .catch((e) => { const msg = e?.message ?? ""; setError(msg.includes("fetch") || msg === "" ? "Não foi possível conectar ao OpenStreetMap. Verifique sua conexão e tente novamente." : msg); })
       .finally(() => setLoading(false));
-  }, [selKey]);
+  }, [selKey, retryCount]);
 
   const categories = useMemo(() => {
     const set = new Set(businesses.map((b) => b.category));
@@ -67,8 +68,14 @@ export function BusinessPanel({ selection }: Props) {
 
   if (error) {
     return (
-      <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700 mx-1">
-        {error}
+      <div className="rounded-lg border border-red-200 bg-red-50 p-3 space-y-2 text-sm text-red-700 mx-1">
+        <p>{error}</p>
+        <button
+          onClick={() => setRetryCount((n) => n + 1)}
+          className="underline text-xs hover:no-underline"
+        >
+          Tentar novamente
+        </button>
       </div>
     );
   }

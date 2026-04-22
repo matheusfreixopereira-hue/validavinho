@@ -1,4 +1,4 @@
-﻿export interface Business {
+export interface Business {
   id: number;
   name: string;
   category: string;
@@ -18,39 +18,39 @@ type OverpassQuery =
 export const CATEGORY_MAP: Record<string, string> = {
   bar: "Bar",
   restaurant: "Restaurante",
-  cafe: "Café",
+  cafe: "Cafe",
   fast_food: "Fast Food",
-  food_court: "Praça de Alimentação",
+  food_court: "Praca de Alimentacao",
   pub: "Pub",
   nightclub: "Balada",
-  pharmacy: "Farmácia",
+  pharmacy: "Farmacia",
   supermarket: "Supermercado",
-  convenience: "Conveniência",
+  convenience: "Conveniencia",
   alcohol: "Bebidas / Adega",
   beverages: "Bebidas / Adega",
   wine: "Adega de Vinhos",
   wine_shop: "Adega de Vinhos",
   liquor_store: "Loja de Bebidas",
   bakery: "Padaria",
-  butcher: "Açougue",
+  butcher: "Acougue",
   greengrocer: "Hortifruti",
-  clothes: "Vestuário",
-  shoes: "Calçados",
-  electronics: "Eletrônicos",
+  clothes: "Vestuario",
+  shoes: "Calcados",
+  electronics: "Eletronicos",
   hardware: "Ferragens",
-  furniture: "Móveis",
+  furniture: "Moveis",
   beauty: "Beleza",
-  hairdresser: "Salão de Beleza",
+  hairdresser: "Salao de Beleza",
   gym: "Academia",
   hospital: "Hospital",
-  clinic: "Clínica",
+  clinic: "Clinica",
   dentist: "Dentista",
   bank: "Banco",
-  atm: "Caixa Eletrônico",
+  atm: "Caixa Eletronico",
   hotel: "Hotel",
   hostel: "Hostel",
   fuel: "Posto de Gasolina",
-  car_wash: "Lava-Rápido",
+  car_wash: "Lava-Rapido",
   laundry: "Lavanderia",
   school: "Escola",
   kindergarten: "Creche",
@@ -60,7 +60,13 @@ export const CATEGORY_MAP: Record<string, string> = {
 };
 
 function getCategory(tags: Record<string, string>): string {
-  if (tags.shop === "alcohol" || tags.shop === "wine" || tags.shop === "wine_shop" || tags.shop === "beverages" || tags.shop === "liquor_store") {
+  if (
+    tags.shop === "alcohol" ||
+    tags.shop === "wine" ||
+    tags.shop === "wine_shop" ||
+    tags.shop === "beverages" ||
+    tags.shop === "liquor_store"
+  ) {
     return CATEGORY_MAP[tags.shop] ?? "Bebidas / Adega";
   }
   if (tags.amenity === "bar" || tags.amenity === "pub" || tags.amenity === "nightclub") {
@@ -73,54 +79,72 @@ function getCategory(tags: Record<string, string>): string {
 }
 
 function buildQuery(q: OverpassQuery): string {
-  const timeout = "[out:json][timeout:25]";
+  const header = "[out:json][timeout:25]";
   if (q.type === "radius") {
     const around = `around:${q.radiusMeters},${q.lat},${q.lng}`;
-    return `${timeout};(node[amenity](${around});node[shop](${around});way[amenity](${around});way[shop](${around}););out center 500;`;
+    return `${header};(node[amenity](${around});node[shop](${around});way[amenity](${around});way[shop](${around}););out center 500;`;
   }
   const poly = q.coords.map((c) => `${c[0]} ${c[1]}`).join(" ");
-  return `${timeout};(node[amenity](poly:"${poly}");node[shop](poly:"${poly}");way[amenity](poly:"${poly}");way[shop](poly:"${poly}"););out center 500;`;
+  return `${header};(node[amenity](poly:"${poly}");node[shop](poly:"${poly}");way[amenity](poly:"${poly}");way[shop](poly:"${poly}"););out center 500;`;
 }
 
-const OVERPASS_ENDPOINTS = [
+const ENDPOINTS = [
   "https://overpass-api.de/api/interpreter",
   "https://overpass.kumi.systems/api/interpreter",
-  "https://maps.mail.ru/osm/tools/overpass/api/interpreter",
+  "https://overpass.openstreetmap.ru/api/interpreter",
 ];
+
+async function queryEndpoint(url: string, query: string): Promise<Response> {
+  return fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: "data=" + encodeURIComponent(query),
+    signal: AbortSignal.timeout(25000),
+  });
+}
 
 export async function fetchBusinesses(q: OverpassQuery): Promise<Business[]> {
   const query = buildQuery(q);
-  let lastError: Error = new Error("Nenhum servidor Overpass disponível");
-  for (const endpoint of OVERPASS_ENDPOINTS) {
+  let lastError: Error = new Error("Nenhum servidor disponivel");
+
+  for (const endpoint of ENDPOINTS) {
     try {
-      const res = await fetch(`${endpoint}?data=${encodeURIComponent(query)}`, {
-        signal: AbortSignal.timeout(20000),
-      });
-      if (!res.ok) throw new Error(`Overpass error: ${res.status}`);
-  const json = await res.json();
-  const seen = new Set<number>();
-  const businesses: Business[] = [];
-  for (const el of json.elements ?? []) {
-    if (seen.has(el.id)) continue;
-    seen.add(el.id);
-    const tags: Record<string, string> = el.tags ?? {};
-    const name = tags.name ?? tags["name:pt"] ?? tags["name:en"] ?? "(sem nome)";
-    const lat = el.lat ?? el.center?.lat;
-    const lng = el.lon ?? el.center?.lon;
-    if (!lat || !lng) continue;
-    businesses.push({
-      id: el.id,
-      name,
-      category: getCategory(tags),
-      lat,
-      lng,
-      phone: tags.phone ?? tags["contact:phone"],
-      email: tags.email ?? tags["contact:email"],
-      website: tags.website ?? tags["contact:website"],
-      address: [tags["addr:street"], tags["addr:housenumber"], tags["addr:suburb"]].filter(Boolean).join(", ") || undefined,
-      openingHours: tags.opening_hours,
-    });
-  }
+      const res = await queryEndpoint(endpoint, query);
+      if (res.status === 429) {
+        lastError = new Error("Servidor sobrecarregado (429). Tente em alguns segundos.");
+        continue;
+      }
+      if (!res.ok) {
+        lastError = new Error(`Erro ${res.status} em ${endpoint}`);
+        continue;
+      }
+      const json = await res.json();
+      const seen = new Set<number>();
+      const businesses: Business[] = [];
+      for (const el of json.elements ?? []) {
+        if (seen.has(el.id)) continue;
+        seen.add(el.id);
+        const tags: Record<string, string> = el.tags ?? {};
+        const name = tags.name ?? tags["name:pt"] ?? tags["name:en"] ?? "(sem nome)";
+        const lat = el.lat ?? el.center?.lat;
+        const lng = el.lon ?? el.center?.lon;
+        if (!lat || !lng) continue;
+        businesses.push({
+          id: el.id,
+          name,
+          category: getCategory(tags),
+          lat,
+          lng,
+          phone: tags.phone ?? tags["contact:phone"],
+          email: tags.email ?? tags["contact:email"],
+          website: tags.website ?? tags["contact:website"],
+          address:
+            [tags["addr:street"], tags["addr:housenumber"], tags["addr:suburb"]]
+              .filter(Boolean)
+              .join(", ") || undefined,
+          openingHours: tags.opening_hours,
+        });
+      }
       return businesses;
     } catch (e) {
       lastError = e instanceof Error ? e : new Error(String(e));
@@ -130,13 +154,21 @@ export async function fetchBusinesses(q: OverpassQuery): Promise<Business[]> {
 }
 
 export function exportToCsv(businesses: Business[], filename = "atividades.csv") {
-  const header = ["Nome", "Categoria", "Telefone", "Email", "Website", "Endereço", "Lat", "Lng"];
+  const header = ["Nome", "Categoria", "Telefone", "Email", "Website", "Endereco", "Lat", "Lng"];
   const rows = businesses.map((b) => [
-    b.name, b.category, b.phone ?? "", b.email ?? "", b.website ?? "", b.address ?? "", String(b.lat), String(b.lng),
+    b.name,
+    b.category,
+    b.phone ?? "",
+    b.email ?? "",
+    b.website ?? "",
+    b.address ?? "",
+    String(b.lat),
+    String(b.lng),
   ]);
-  const csv = [header, ...rows].map((r) => r.map((c) => `"${c.replace(/"/g, '""')}"`).join(",")).join("\n");
-  const bom = "\uFEFF";
-  const blob = new Blob([bom + csv], { type: "text/csv;charset=utf-8;" });
+  const csv = [header, ...rows]
+    .map((r) => r.map((c) => `"${c.replace(/"/g, "\"\"")}`).join(","))
+    .join("\n");
+  const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
